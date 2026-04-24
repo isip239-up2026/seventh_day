@@ -1,0 +1,58 @@
+{% extends "movies/base.html" %}
+
+{% block title %}{{ movie.title }} — Кинотека{% endblock %}
+
+{% block content %}
+<div class="row">
+
+  <div class="col-md-4 mb-4">
+    {% if movie.poster_url %}
+    <img src="{{ movie.poster_url }}" class="img-fluid rounded shadow"
+         style="max-height: 500px; width: 100%; object-fit: cover;" alt="{{ movie.title }}">
+    {% else %}
+    <div class="d-flex align-items-center justify-content-center bg-secondary rounded"
+         style="height: 400px; font-size: 6rem;">🎬</div>
+    {% endif %}
+
+    <div class="mt-3">
+      {# Студент 8: кнопка «Хочу посмотреть» #}
+    </div>
+    <div class="mt-2">
+      {# Студент 10: кнопка «Скачать как .txt» #}
+    </div>
+  </div>
+
+  <div class="col-md-8">
+    <h2>{{ movie.title }}</h2>
+    <p class="text-muted mb-1">{{ movie.year }}{% if movie.duration %} · {{ movie.duration }} мин{% endif %}</p>
+
+    {% if movie.director %}
+    <p class="mb-2">
+      Режиссёр:
+      {# Студент 9: сделать ссылкой #}
+      <strong>{{ movie.director.name }}</strong>
+    </p>
+    {% endif %}
+
+    {# Студент 1: вывести жанры-бейджи #}
+
+    {# Студент 3: вывести средний рейтинг звёздами #}
+
+    <p class="mt-3">{{ movie.description }}</p>
+
+    <hr class="border-secondary">
+
+    {# Студент 4: блок «Похожие фильмы» #}
+
+    <hr class="border-secondary">
+
+    <h4 class="mt-4">Рецензии</h4>
+    {# Студент 2: вывести рецензии #}
+    <p class="text-muted">Рецензий пока нет.</p>
+
+    <h5 class="mt-4">Оставить рецензию</h5>
+    {# Студент 2: форма добавления рецензии #}
+
+  </div>
+</div>
+{% endblock %}

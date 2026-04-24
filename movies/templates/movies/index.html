@@ -1,0 +1,50 @@
+{% extends "movies/base.html" %}
+
+{% block title %}Все фильмы — Кинотека{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h2>Все фильмы</h2>
+  {# Студент 6: добавить кнопки сортировки #}
+</div>
+
+{# Студент 1: добавить фильтр по жанрам #}
+
+<div class="row row-cols-1 row-cols-md-4 g-4">
+  {% for movie in movies %}
+  <div class="col">
+    <div class="card h-100 shadow">
+      {% if movie.poster_url %}
+      <img src="{{ movie.poster_url }}" class="card-img-top"
+           style="height: 320px; object-fit: cover;" alt="{{ movie.title }}">
+      {% else %}
+      <div class="d-flex align-items-center justify-content-center bg-secondary"
+           style="height: 320px; font-size: 4rem;">🎬</div>
+      {% endif %}
+      <div class="card-body">
+        <h6 class="card-title">
+          <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-white">
+            {{ movie.title }}
+          </a>
+        </h6>
+        <p class="text-muted mb-1"><small>{{ movie.year }}</small></p>
+        {% if movie.director %}
+        <p class="text-muted mb-2">
+          <small>
+            {# Студент 9: сделать имя режиссёра ссылкой #}
+            {{ movie.director.name }}
+          </small>
+        </p>
+        {% endif %}
+        {# Студент 1: вывести жанры-бейджи #}
+        {# Студент 3: вывести средний рейтинг #}
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col"><p class="text-muted">Фильмов пока нет.</p></div>
+  {% endfor %}
+</div>
+
+{# Студент 6: добавить пагинацию #}
+{% endblock %}
