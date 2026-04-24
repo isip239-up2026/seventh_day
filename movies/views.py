@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
-from .models import Movie, Director
-
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Movie, Director, Review
+from movies import forms
 
 def index(request):
     movies = Movie.objects.select_related("director").prefetch_related("genres").all()
@@ -9,4 +9,21 @@ def index(request):
 
 def movie_detail(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
-    return render(request, "movies/movie_detail.html", {"movie": movie})
+    reviews = movie.reviews.all()
+    return render(request, "movies/movie_detail.html", {"movie": movie, "review": reviews, "form": forms.ReviewForm()})
+
+def add_reviews(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    if request.method == 'POST':
+        form = forms.ReviewForm(request.POST)
+        if form.is_valid():
+            Review.objects.create(
+                movie=movie,
+                author_name=form.cleaned_data['author_name'],
+                rating=int(form.cleaned_data['rating']),
+                text=form.cleaned_data['text']
+            )
+            return redirect('movie_detail', movie_id=movie_id)
+    else:
+        form = forms.ReviewForm()
+    return render(request, "movies/movie_detail.html", {})
