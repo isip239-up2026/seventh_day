@@ -48,11 +48,43 @@
 
     <h4 class="mt-4">Рецензии</h4>
     {# Студент 2: вывести рецензии #}
-    <p class="text-muted">Рецензий пока нет.</p>
+  {% for i in review %}
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Автор: {{ i.author_name }}</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Рейтинг: {{ i.rating }} / 10</h6>
+        <p class="card-text">{{ i.text }}</p>
+        <p class="card-text"><small class="text-muted">Добавлено: {{ i.created_at }}</small></p>
+      </div>
+    </div>
+  {% endfor %}
 
-    <h5 class="mt-4">Оставить рецензию</h5>
-    {# Студент 2: форма добавления рецензии #}
 
+    <h5 class="mt-4 mb-3">Оставить рецензию</h5>
+    <form action="{% url 'add_reviews' movie.id %}" method="post" class="needs-validation" novalidate>
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">Имя автора</label>
+        {{ form.author_name }}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Рейтинг</label>
+    <div class="d-flex gap-3">
+      {% for radio in form.rating %}
+        <div class="form-check form-check-inline">
+          {{ radio.tag }} {{ radio.choice_label }}
+        </div>
+      {% endfor %}
+    </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Комментарий</label>
+        {{ form.text }}
+      </div>
+      <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
   </div>
 </div>
 {% endblock %}
