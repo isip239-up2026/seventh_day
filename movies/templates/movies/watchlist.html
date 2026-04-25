@@ -1,0 +1,34 @@
+{% extends "movies/base.html" %}
+
+{% block title %}Хочу посмотреть — Кинотека{% endblock %}
+
+{% block content %}
+  <h2 class="mb-4">Хочу посмотреть</h2>
+
+  {% if items %}
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+      {% for item in items %}
+        <div class="col">
+          <a href="{% url 'movie_detail' item.movie.id %}" class="text-decoration-none">
+            <div class="card h-100">
+              {% if item.movie.poster_url %}
+                <img src="{{ item.movie.poster_url }}" class="card-img-top" alt="{{ item.movie.title }}" style="height: 300px; object-fit: cover;">
+              {% else %}
+                <div class="d-flex align-items-center justify-content-center bg-secondary" style="height: 300px; font-size: 4rem;">🎬</div>
+              {% endif %}
+              <div class="card-body">
+                <h5 class="card-title text-light">{{ item.movie.title }}</h5>
+                <p class="card-text text-muted">{{ item.movie.director.name }} • {{ item.movie.year }}</p>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center text-muted mt-5">
+      <h4>Список пуст</h4>
+      <p>Добавляйте фильмы на их страницах</p>
+    </div>
+  {% endif %}
+{% endblock %}

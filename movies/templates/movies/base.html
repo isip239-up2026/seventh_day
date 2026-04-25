@@ -25,6 +25,12 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'index' %}">Все фильмы</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'top_movies' %}">Топ фильмов</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'watchlist' %}">Хочу посмотреть</a>
+        </li>
       </ul>
       <form class="d-flex" action="{% url 'search' %}" method="get">
         <input class="form-control me-2" type="search" name="q" placeholder="Поиск фильмов..."

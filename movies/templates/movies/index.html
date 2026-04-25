@@ -51,7 +51,7 @@
         <p class="text-muted mb-2">
           <small>
 
-            {{ movie.director.name }}
+            <a href="{% url 'director_detail' movie.director.id %}">{{ movie.director.name }}</a>
           </small>
         </p>
         {% endif %}
