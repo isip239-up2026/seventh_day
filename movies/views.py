@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, HttpResponse
 from django.db.models import Q
 from .models import Movie, Director, Review, Genre
 from django.core.paginator import Paginator
@@ -92,3 +92,12 @@ def top_movies(request):
         review_count=Count('reviews')
     ).filter(review_count__gt=0).order_by('-avg_rating')[:10]
     return render(request, "movies/top.html", {"movies": movies})
+
+def export_movie(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+
+    content = "цвф"
+    response = HttpResponse(content ,content_type='text/plain; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{movie.title}.txt"'
+    return response
+
