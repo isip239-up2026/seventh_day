@@ -36,7 +36,7 @@
     <h2>{{ movie.title }}</h2>
     <p class="text-muted mb-1">{{ movie.year }}{% if movie.duration %} · {{ movie.duration }} мин{% endif %}</p>
 
-    {% if movie.director %}
+    <a href="{% url 'director_detail' movie.director.id %}">{{ movie.director.name }}</a>
     <p class="mb-2">
       Режиссёр:
       {# Студент 9: сделать ссылкой #}

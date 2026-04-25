@@ -117,3 +117,13 @@ def watchlist(request):
     from .models import Watchlist
     items = Watchlist.objects.filter(ip_address=ip).select_related('movie__director').prefetch_related('movie__genres')
     return render(request, "movies/watchlist.html", {"items": items})
+
+def director_detail(request, director_id):
+    director = get_object_or_404(Director, id=director_id)
+    movies = director.movies.all().annotate(avg_rating=Avg('reviews__rating'))
+    total_reviews = Review.objects.filter(movie__director=director).count()
+    return render(request, 'movies/director.html', {
+        'director': director,
+        'movies': movies,
+        'total_reviews': total_reviews,
+    })

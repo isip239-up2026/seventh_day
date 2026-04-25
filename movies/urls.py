@@ -8,6 +8,7 @@ urlpatterns = [
     path("search/", views.search, name="search"),
     path("genre/<int:genre_id>/", views.genre_movies, name="genre_movies"),
     path("top/", views.top_movies, name="top_movies"),
+    path("director/<int:director_id>/", views.director_detail, name="director_detail"),
     path("movie/<int:movie_id>/watchlist/", views.toggle_watchlist, name="toggle_watchlist"),
     path("watchlist/", views.watchlist, name="watchlist"),
 ]
