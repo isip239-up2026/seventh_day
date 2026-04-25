@@ -1,14 +1,39 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from .models import Movie, Director, Review, Genre
+from django.core.paginator import Paginator
 from movies import forms
 from django.db.models import Avg, Count
+
 
 def index(request):
     movies = (Movie.objects.select_related("director")
               .prefetch_related("genres")
               .annotate(avg_rating=Avg('reviews__rating')).all())
-    return render(request, "movies/index.html", {"movies": movies})
+
+    sort_by = request.GET.get('sort', '-year')
+    if sort_by == 'title':
+        movies = movies.order_by('title')
+    elif sort_by == '-title':
+        movies = movies.order_by('-title')
+    elif sort_by == 'year':
+        movies = movies.order_by('year')
+    elif sort_by == '-year':
+        movies = movies.order_by('-year')
+    elif sort_by == 'avg_rating':
+        movies = movies.order_by('-avg_rating')
+    else:
+        movies = movies.order_by(sort_by)
+
+
+    paginator = Paginator(movies, 4)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "movies/index.html", {
+        "page_obj": page_obj,
+        "current_sort": sort_by
+    })
 
 def movie_detail(request, movie_id):
     movie_rating = Movie.objects.filter(id=movie_id).aggregate(avg_rating=Avg('reviews__rating'), count=Count('id'))
@@ -20,7 +45,14 @@ def movie_detail(request, movie_id):
     ).exclude(
         id=movie.id
     ).distinct()[:4]
-    return render(request, "movies/movie_detail.html", {"movie": movie, "review": reviews, "form": forms.ReviewForm(), "movie_rating": movie_rating, 'related': related})
+
+    return render(request, "movies/movie_detail.html", {
+        "movie": movie,
+        "reviews": reviews,
+        "form": forms.ReviewForm(),
+        "movie_rating": movie_rating,
+        'related': related
+    })
 
 def add_reviews(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
@@ -60,3 +92,28 @@ def genre_movies(request, genre_id):
         "genre": genre,
         "movies": movies
     })
+
+def top_movies(request):
+    movies = Movie.objects.annotate(
+        avg_rating=Avg('reviews__rating'),
+        review_count=Count('reviews')
+    ).filter(review_count__gt=0).order_by('-avg_rating')[:10]
+    return render(request, "movies/top.html", {"movies": movies})
+
+
+def toggle_watchlist(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    ip = request.META.get('REMOTE_ADDR', '127.0.0.1')
+    from .models import Watchlist
+    existing = Watchlist.objects.filter(movie=movie, ip_address=ip).first()
+    if existing:
+        existing.delete()
+    else:
+        Watchlist.objects.create(movie=movie, ip_address=ip)
+    return redirect('movie_detail', movie_id=movie_id)
+
+def watchlist(request):
+    ip = request.META.get('REMOTE_ADDR', '127.0.0.1')
+    from .models import Watchlist
+    items = Watchlist.objects.filter(ip_address=ip).select_related('movie__director').prefetch_related('movie__genres')
+    return render(request, "movies/watchlist.html", {"items": items})

@@ -6,12 +6,31 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2>Все фильмы</h2>
 
+  {# Студент 6: добавить кнопки сортировки #}
+  <div class="btn-group" role="group">
+    <a href="?sort=-year&page=1"
+       class="btn btn-sm {% if current_sort == '-year' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      Год (новые)
+    </a>
+    <a href="?sort=year&page=1"
+       class="btn btn-sm {% if current_sort == 'year' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      Год (старые)
+    </a>
+    <a href="?sort=title&page=1"
+       class="btn btn-sm {% if current_sort == 'title' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      Название
+    </a>
+    <a href="?sort=avg_rating&page=1"
+       class="btn btn-sm {% if current_sort == 'avg_rating' %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+      Рейтинг
+    </a>
+  </div>
 </div>
 
 
 
 <div class="row row-cols-1 row-cols-md-4 g-4">
-  {% for movie in movies %}
+  {% for movie in page_obj %}
   <div class="col">
     <div class="card h-100 shadow">
       {% if movie.poster_url %}
@@ -55,4 +74,29 @@
 </div>
 
 {# Студент 6: добавить пагинацию #}
+{% if page_obj.has_other_pages %}
+<nav>
+  <ul class="pagination justify-content-center">
+    {% if page_obj.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?sort={{ current_sort }}&page={{ page_obj.previous_page_number }}">
+        Previous
+      </a>
+    </li>
+    {% endif %}
+
+    <li class="page-item active">
+      <span class="page-link">{{ page_obj.number }}</span>
+    </li>
+
+    {% if page_obj.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?sort={{ current_sort }}&page={{ page_obj.next_page_number }}">
+        Next
+      </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
 {% endblock %}
