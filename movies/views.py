@@ -39,11 +39,19 @@ def movie_detail(request, movie_id):
     movie_rating = Movie.objects.filter(id=movie_id).aggregate(avg_rating=Avg('reviews__rating'), count=Count('id'))
     movie = get_object_or_404(Movie, id=movie_id)
     reviews = movie.reviews.all()
+    genres = movie.genres.all()
+    related = Movie.objects.filter(
+        genres__in=genres
+    ).exclude(
+        id=movie.id
+    ).distinct()[:4]
+
     return render(request, "movies/movie_detail.html", {
         "movie": movie,
         "reviews": reviews,
         "form": forms.ReviewForm(),
         "movie_rating": movie_rating,
+        'related': related
     })
 
 def add_reviews(request, movie_id):
@@ -76,7 +84,6 @@ def search(request):
         "query": query,
         "results": results,
     })
-
 
 def genre_movies(request, genre_id):
     genre = get_object_or_404(Genre, id=genre_id)
