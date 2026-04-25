@@ -10,7 +10,7 @@ def index(request):
     movies = (Movie.objects.select_related("director")
               .prefetch_related("genres")
               .annotate(avg_rating=Avg('reviews__rating')).all())
-    # Сортировка
+
     sort_by = request.GET.get('sort', '-year')
     if sort_by == 'title':
         movies = movies.order_by('title')
@@ -25,7 +25,7 @@ def index(request):
     else:
         movies = movies.order_by(sort_by)
 
-    # Пагинация
+
     paginator = Paginator(movies, 4)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -92,3 +92,21 @@ def top_movies(request):
         review_count=Count('reviews')
     ).filter(review_count__gt=0).order_by('-avg_rating')[:10]
     return render(request, "movies/top.html", {"movies": movies})
+
+
+def toggle_watchlist(request, movie_id):
+    movie = get_object_or_404(Movie, id=movie_id)
+    ip = request.META.get('REMOTE_ADDR', '127.0.0.1')
+    from .models import Watchlist
+    existing = Watchlist.objects.filter(movie=movie, ip_address=ip).first()
+    if existing:
+        existing.delete()
+    else:
+        Watchlist.objects.create(movie=movie, ip_address=ip)
+    return redirect('movie_detail', movie_id=movie_id)
+
+def watchlist(request):
+    ip = request.META.get('REMOTE_ADDR', '127.0.0.1')
+    from .models import Watchlist
+    items = Watchlist.objects.filter(ip_address=ip).select_related('movie__director').prefetch_related('movie__genres')
+    return render(request, "movies/watchlist.html", {"items": items})
