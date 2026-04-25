@@ -1,13 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
 from .models import Movie, Director, Review, Genre
 from movies import forms
 from django.db.models import Avg, Count
+
 def index(request):
     movies = (Movie.objects.select_related("director")
               .prefetch_related("genres")
               .annotate(avg_rating=Avg('reviews__rating')).all())
     return render(request, "movies/index.html", {"movies": movies})
-
 
 def movie_detail(request, movie_id):
     movie_rating = Movie.objects.filter(id=movie_id).aggregate(avg_rating=Avg('reviews__rating'), count=Count('id'))
@@ -30,6 +31,21 @@ def add_reviews(request, movie_id):
     else:
         form = forms.ReviewForm()
     return render(request, "movies/movie_detail.html", {})
+
+
+def search(request):
+    query = request.GET.get("q", "").strip()
+    results = []
+    if query:
+        results = Movie.objects.filter(
+            Q(title__icontains=query) |
+            Q(director__name__icontains=query) |
+            Q(genres__name__icontains=query)
+        ).distinct().select_related("director").prefetch_related("genres")
+    return render(request, "movies/search.html", {
+        "query": query,
+        "results": results,
+
 
 def genre_movies(request, genre_id):
     genre = get_object_or_404(Genre, id=genre_id)
