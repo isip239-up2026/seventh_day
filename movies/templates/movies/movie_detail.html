@@ -35,6 +35,13 @@
     {% endif %}
 
     {# Студент 1: вывести жанры-бейджи #}
+    <div class="mb-3">
+      {% for genre in movie.genres.all %}
+      <a href="{% url 'genre_movies' genre.id %}" class="text-decoration-none">
+        <span class="badge bg-primary me-1">{{ genre.name }}</span>
+      </a>
+      {% endfor %}
+    </div>
 
     {# Студент 3: вывести средний рейтинг звёздами #}
 

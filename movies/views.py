@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Movie, Director, Review
+from .models import Movie, Director, Review, Genre
 from movies import forms
 
 def index(request):
@@ -27,3 +27,11 @@ def add_reviews(request, movie_id):
     else:
         form = forms.ReviewForm()
     return render(request, "movies/movie_detail.html", {})
+
+def genre_movies(request, genre_id):
+    genre = get_object_or_404(Genre, id=genre_id)
+    movies = Movie.objects.filter(genres=genre).select_related("director").prefetch_related("genres")
+    return render(request, "movies/genre.html", {
+        "genre": genre,
+        "movies": movies
+    })
