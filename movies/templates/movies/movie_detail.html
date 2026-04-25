@@ -15,7 +15,17 @@
     {% endif %}
 
     <div class="mt-3">
-      {# Студент 8: кнопка «Хочу посмотреть» #}
+
+{% with in_watchlist=movie.watchlist_set.all %}
+  <form action="{% url 'toggle_watchlist' movie.id %}" method="post">
+    {% csrf_token %}
+    {% if in_watchlist %}
+      <button type="submit" class="btn btn-success w-100">✓ В списке</button>
+    {% else %}
+      <button type="submit" class="btn btn-outline-light w-100">+ В список</button>
+    {% endif %}
+  </form>
+{% endwith %}
     </div>
     <div class="mt-2">
       {# Студент 10: кнопка «Скачать как .txt» #}
