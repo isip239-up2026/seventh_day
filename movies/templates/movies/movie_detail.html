@@ -44,7 +44,7 @@
     </div>
 
     {# Студент 3: вывести средний рейтинг звёздами #}
-
+    {{ movie_rating.avg_rating|floatformat:1 }}★
     <p class="mt-3">{{ movie.description }}</p>
 
     <hr class="border-secondary">
@@ -59,7 +59,7 @@
     <div class="card mb-3 shadow-sm">
       <div class="card-body">
         <h5 class="card-title">Автор: {{ i.author_name }}</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Рейтинг: {{ i.rating }} / 10</h6>
+        <h6 class="card-subtitle mb-2 text-muted">Рейтинг: {{ i.rating }} / 5</h6>
         <p class="card-text">{{ i.text }}</p>
         <p class="card-text"><small class="text-muted">Добавлено: {{ i.created_at }}</small></p>
       </div>
