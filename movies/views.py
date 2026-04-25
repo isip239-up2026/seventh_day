@@ -38,3 +38,10 @@ def genre_movies(request, genre_id):
         "genre": genre,
         "movies": movies
     })
+
+def top_movies(request):
+    movies = Movie.objects.annotate(
+        avg_rating=Avg('reviews__rating'),
+        review_count=Count('reviews')
+    ).filter(review_count__gt=0).order_by('-avg_rating')[:10]
+    return render(request, "movies/top.html", {"movies": movies})
