@@ -5,10 +5,10 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
   <h2>Все фильмы</h2>
-  {# Студент 6: добавить кнопки сортировки #}
+
 </div>
 
-{# Студент 1: добавить фильтр по жанрам #}
+
 
 <div class="row row-cols-1 row-cols-md-4 g-4">
   {% for movie in movies %}
@@ -31,13 +31,12 @@
         {% if movie.director %}
         <p class="text-muted mb-2">
           <small>
-            {# Студент 9: сделать имя режиссёра ссылкой #}
+
             {{ movie.director.name }}
           </small>
         </p>
         {% endif %}
-        {# Студент 1: вывести жанры-бейджи #}
-        {# Студент 3: вывести средний рейтинг #}
+
       </div>
     </div>
   </div>
@@ -46,5 +45,4 @@
   {% endfor %}
 </div>
 
-{# Студент 6: добавить пагинацию #}
 {% endblock %}

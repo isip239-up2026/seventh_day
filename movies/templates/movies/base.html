@@ -25,10 +25,12 @@
         <li class="nav-item">
           <a class="nav-link" href="{% url 'index' %}">Все фильмы</a>
         </li>
-        {# Студент 7: добавить ссылку «Топ фильмов» #}
-        {# Студент 8: добавить ссылку «Хочу посмотреть» #}
       </ul>
-      {# Студент 5: добавить форму поиска #}
+      <form class="d-flex" action="{% url 'search' %}" method="get">
+        <input class="form-control me-2" type="search" name="q" placeholder="Поиск фильмов..."
+               value="{{ query|default:'' }}" aria-label="Search">
+        <button class="btn btn-outline-light" type="submit">S</button>
+      </form>
     </div>
   </div>
 </nav>
