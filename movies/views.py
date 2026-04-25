@@ -92,3 +92,13 @@ def top_movies(request):
         review_count=Count('reviews')
     ).filter(review_count__gt=0).order_by('-avg_rating')[:10]
     return render(request, "movies/top.html", {"movies": movies})
+
+def director_detail(request, director_id):
+    director = get_object_or_404(Director, id=director_id)
+    movies = director.movies.all().annotate(avg_rating=Avg('reviews__rating'))
+    total_reviews = Review.objects.filter(movie__director=director).count()
+    return render(request, 'movies/director.html', {
+        'director': director,
+        'movies': movies,
+        'total_reviews': total_reviews,
+    })
