@@ -1,20 +1,50 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from .models import Movie, Director, Review, Genre
+from django.core.paginator import Paginator
 from movies import forms
 from django.db.models import Avg, Count
+
 
 def index(request):
     movies = (Movie.objects.select_related("director")
               .prefetch_related("genres")
               .annotate(avg_rating=Avg('reviews__rating')).all())
-    return render(request, "movies/index.html", {"movies": movies})
+    # Сортировка
+    sort_by = request.GET.get('sort', '-year')
+    if sort_by == 'title':
+        movies = movies.order_by('title')
+    elif sort_by == '-title':
+        movies = movies.order_by('-title')
+    elif sort_by == 'year':
+        movies = movies.order_by('year')
+    elif sort_by == '-year':
+        movies = movies.order_by('-year')
+    elif sort_by == 'avg_rating':
+        movies = movies.order_by('-avg_rating')
+    else:
+        movies = movies.order_by(sort_by)
+
+    # Пагинация
+    paginator = Paginator(movies, 4)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "movies/index.html", {
+        "page_obj": page_obj,
+        "current_sort": sort_by
+    })
 
 def movie_detail(request, movie_id):
     movie_rating = Movie.objects.filter(id=movie_id).aggregate(avg_rating=Avg('reviews__rating'), count=Count('id'))
     movie = get_object_or_404(Movie, id=movie_id)
     reviews = movie.reviews.all()
-    return render(request, "movies/movie_detail.html", {"movie": movie, "review": reviews, "form": forms.ReviewForm(), "movie_rating": movie_rating})
+    return render(request, "movies/movie_detail.html", {
+        "movie": movie,
+        "reviews": reviews,
+        "form": forms.ReviewForm(),
+        "movie_rating": movie_rating,
+    })
 
 def add_reviews(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
