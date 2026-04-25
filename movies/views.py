@@ -45,6 +45,7 @@ def search(request):
     return render(request, "movies/search.html", {
         "query": query,
         "results": results,
+    })
 
 
 def genre_movies(request, genre_id):
