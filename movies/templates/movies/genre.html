@@ -1,0 +1,52 @@
+{% extends "movies/base.html" %}
+
+{% block title %}Жанр: {{ genre.name }} — Кинотека{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+  <h2>Жанр: {{ genre.name }}</h2>
+  <p class="text-muted">Найдено фильмов: {{ movies.count }}</p>
+</div>
+
+<div class="row row-cols-1 row-cols-md-4 g-4">
+  {% for movie in movies %}
+  <div class="col">
+    <div class="card h-100 shadow">
+      {% if movie.poster_url %}
+      <img src="{{ movie.poster_url }}" class="card-img-top"
+           style="height: 320px; object-fit: cover;" alt="{{ movie.title }}">
+      {% else %}
+      <div class="d-flex align-items-center justify-content-center bg-secondary"
+           style="height: 320px; font-size: 4rem;">🎬</div>
+      {% endif %}
+      <div class="card-body">
+        <h6 class="card-title">
+          <a href="{% url 'movie_detail' movie.id %}" class="text-decoration-none text-white">
+            {{ movie.title }}
+          </a>
+        </h6>
+        <p class="text-muted mb-1"><small>{{ movie.year }}</small></p>
+        {% if movie.director %}
+        <p class="text-muted mb-2">
+          <small>{{ movie.director.name }}</small>
+        </p>
+        {% endif %}
+        <div class="mb-2">
+          {% for g in movie.genres.all %}
+          <a href="{% url 'genre_movies' g.id %}" class="text-decoration-none">
+            <span class="badge bg-primary me-1">{{ g.name }}</span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col"><p class="text-muted">Фильмов этого жанра пока нет.</p></div>
+  {% endfor %}
+</div>
+
+<div class="mt-4">
+  <a href="{% url 'index' %}" class="btn btn-secondary">← Назад ко всем фильмам</a>
+</div>
+{% endblock %}

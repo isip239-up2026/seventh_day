@@ -27,7 +27,7 @@
   </div>
 </div>
 
-{# Студент 1: добавить фильтр по жанрам #}
+
 
 <div class="row row-cols-1 row-cols-md-4 g-4">
   {% for movie in page_obj %}
@@ -50,13 +50,21 @@
         {% if movie.director %}
         <p class="text-muted mb-2">
           <small>
-            {# Студент 9: сделать имя режиссёра ссылкой #}
+
             {{ movie.director.name }}
           </small>
         </p>
         {% endif %}
         {# Студент 1: вывести жанры-бейджи #}
+        <div class="mb-2">
+          {% for genre in movie.genres.all %}
+          <a href="{% url 'genre_movies' genre.id %}" class="text-decoration-none">
+            <span class="badge bg-primary me-1">{{ genre.name }}</span>
+          </a>
+          {% endfor %}
+        </div>
         {# Студент 3: вывести средний рейтинг #}
+        {{ movie.avg_rating|floatformat:1 }}★
       </div>
     </div>
   </div>
