@@ -94,4 +94,18 @@
     </form>
   </div>
 </div>
+{% if related %}
+<h3>Похожие фильмы</h3>
+<div style="display: flex; gap: 15px;">
+  {% for film in related %}
+  <a href="{% url 'movie_detail' film.id%}">
+    <img src="{{ film.poster_url }}" width="120px" height="180px">
+  </a>
+  <div>
+    <p>{{ film.title }}</p>
+    <p>{{ film.year }}</p>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
 {% endblock %}
