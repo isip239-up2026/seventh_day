@@ -1,0 +1,57 @@
+{% extends "movies/base.html" %}
+
+{% block title %}Топ фильмов{% endblock %}
+
+{% block content %}
+
+
+<div class="container my-4">
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    {% for i in movies %}
+      {% if forloop.counter <= 3 %}
+        <!-- Обертка для первых 3 фильмов -->
+        <div class="col">
+          <div class="border p-2 rounded">
+            <div class="card h-100 shadow-sm">
+              <img src="{{ i.poster_url }}" class="card-img-top" alt="{{ i.title }} poster">
+              <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ i.title }}</h5>
+                <p class="card-text text-muted">{{ i.description }}</p>
+                <p class="mb-1"><strong>Жанры:</strong> {{ i.genres }}</p>
+                <p class="mb-1"><strong>Год:</strong> {{ i.year }}</p>
+                <div class="mt-auto">
+                  <p class="mb-1">
+                    <strong>Рейтинг:</strong> {{ i.avg_rating|floatformat:1 }}★
+                  </p>
+                  <p><strong>Всего отзывов:</strong> {{ i.review_count|floatformat:"0" }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <!-- остальные фильмы без рамки -->
+        <div class="col">
+          <div class="card h-100 shadow-sm">
+            <img src="{{ i.poster_url }}" class="card-img-top" alt="{{ i.title }} poster">
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title">{{ i.title }}</h5>
+              <p class="card-text text-muted">{{ i.description }}</p>
+              <p class="mb-1"><strong>Жанры:</strong> {{ i.genres }}</p>
+              <p class="mb-1"><strong>Год:</strong> {{ i.year }}</p>
+              <div class="mt-auto">
+                <p class="mb-1">
+                  <strong>Рейтинг:</strong> {{ i.avg_rating|floatformat:1 }}★
+                </p>
+                <p><strong>Всего отзывов:</strong> {{ i.review_count|floatformat:"0" }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+
+{% endblock %}

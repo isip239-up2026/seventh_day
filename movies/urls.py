@@ -7,4 +7,5 @@ urlpatterns = [
     path("movie/<int:movie_id>/review/", views.add_reviews, name="add_reviews"),
     path("search/", views.search, name="search"),
     path("genre/<int:genre_id>/", views.genre_movies, name="genre_movies"),
+    path("top/", views.top_movies, name="top_movies"),
 ]
